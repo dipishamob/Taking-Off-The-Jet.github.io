@@ -5747,3 +5747,87 @@ function gameLoop() {
 gameLoop();
 
 
+// main.js
+
+// Initialize the game
+function initGame() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas size based on the device
+  function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+  }
+
+  // Resize canvas on window resize
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas(); // Initial resize
+
+  // Game variables
+  let player = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      size: 50,
+      speed: 5
+  };
+
+  // Draw the player
+  function drawPlayer() {
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(player.x - player.size / 2, player.y - player.size / 2, player.size, player.size);
+  }
+
+  // Clear the canvas
+  function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Update game state
+  function update() {
+      clearCanvas();
+      drawPlayer();
+      requestAnimationFrame(update);
+  }
+
+  // Handle keyboard input
+  function handleKeyDown(e) {
+      switch (e.key) {
+          case 'ArrowUp':
+              player.y -= player.speed;
+              break;
+          case 'ArrowDown':
+              player.y += player.speed;
+              break;
+          case 'ArrowLeft':
+              player.x -= player.speed;
+              break;
+          case 'ArrowRight':
+              player.x += player.speed;
+              break;
+      }
+  }
+
+  // Handle touch input
+  function handleTouchMove(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      player.x = touch.clientX;
+      player.y = touch.clientY;
+  }
+
+  // Add event listeners for input
+  if ('ontouchstart' in window) {
+      // Mobile touch controls
+      canvas.addEventListener('touchmove', handleTouchMove);
+  } else {
+      // Laptop keyboard controls
+      window.addEventListener('keydown', handleKeyDown);
+  }
+
+  // Start the game loop
+  update();
+}
+
+// Start the game when the page loads
+window.onload = initGame;
